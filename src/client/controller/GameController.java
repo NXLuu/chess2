@@ -271,8 +271,10 @@ public class GameController {
         public void mouseReleased(MouseEvent e) {
             int x = e.getX() / Piece.size;
             int y = e.getY() / Piece.size;
-            game.move(x, y);
-            timer.PauseTimer();
+
+            if (game.move(x, y)) {
+                timer.PauseTimer();
+            }
             gamePanel.revalidate();
             gamePanel.repaint();
         }

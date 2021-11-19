@@ -289,21 +289,24 @@ public final class Game {
         }
     }
 
-    public void move(int x, int y) {
+    public boolean move(int x, int y) {
         if (active != null) {
 
             int lastX = active.getXcord();
             int lastY = active.getYcord();
             if (active.makeMove(x, y, board)) {
                 int choicePromte = tryToPromote(active);
-                SendMoveInfToServer(lastX, lastY, x, y, choicePromte);
                 changeSide();
                 checkMate();
                 active = null;
+                SendMoveInfToServer(lastX, lastY, x, y, choicePromte);
+                return true;
             }
             drag = false;
 
         }
+        
+        return false;
     }
 
     public void opponentMove(int fromX, int fromY, int x, int y, int choicePromte) {
