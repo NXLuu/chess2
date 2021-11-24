@@ -27,7 +27,10 @@ public class Client {
     public static ObjectOutputStream sOutput;
     public static ServerListener listenMe;
     public static ArrayList<String> rooms;
+    public static boolean isLogin = false;
 
+    
+    
     public static void Start(String ip, int port, GameController gameController, ClientController clientController) {
         try {
             Client.socket = new Socket(ip, port);

@@ -71,10 +71,17 @@ public class GameFrame extends javax.swing.JFrame {
     public void enemyLoss(Message mess) {
 //        reset();
     }
-
+    
+    public void resetTime() {
+        jLabel3.setText(timeSettings);
+        jLabel4.setText(timeSettings);
+    }
+    
     public String getChatMess() {
         return jTextField1.getText();
     }
+    
+   
 
     public void setChatArea(String mess, boolean isMe) {
         String str = "<html>" + mess
@@ -124,6 +131,7 @@ public class GameFrame extends javax.swing.JFrame {
     public void restartGame() {
         setButton();
         jPanel6.setVisible(false);
+        resetTime();
     }
 
     public void showFinishMessage(boolean isWin) {
@@ -154,6 +162,7 @@ public class GameFrame extends javax.swing.JFrame {
         setButton();
         jPanel6.setVisible(false);
         gameFrame = this;
+        resetTime();
     }
 
     public void setMyName(String name) {

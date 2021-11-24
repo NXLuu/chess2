@@ -9,8 +9,10 @@ import server.model.Client;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.History;
 import model.Message;
 import model.User;
 import server.logicApplication.UserDAO;
@@ -61,8 +63,9 @@ public class ClientListener extends Thread {
                             ServerCtr.Send(TheClient, newMessage);
                             TheClient.setName(name);
                             TheClient.setId(user.getId());
+                            TheClient.setIsLogin(true);
                             break;
-                       
+
                         case CreateRoom:
                             ArrayList<String> informations = (ArrayList<String>) msg.content;
                             String roomName = informations.get(0);
@@ -134,8 +137,16 @@ public class ClientListener extends Thread {
                         case EnemyLoss:
                             ServerCtr.Send(TheClient.getOpponent(), msg);
                             UserDAO userDao = new UserDAO();
-                            userDao.UpdateElo(TheClient.getOpponent().getId());
-                            userDao.UpdateWin(TheClient.getOpponent().getId());
+                            if (TheClient.getOpponent().isIsLogin()) {
+                                userDao.UpdateElo(TheClient.getOpponent().getId());
+                                userDao.UpdateWin(TheClient.getOpponent().getId());
+                                userDao.insertHistery(TheClient.getOpponent().getId(), TheClient.getName(), true);
+                            }
+
+                            if (TheClient.isIsLogin()) {
+                                userDao.insertHistery(TheClient.getId(), TheClient.getOpponent().getName(), false);
+                            }
+                          
                             break;
                         case Ready:
                             ServerCtr.Send(TheClient.getOpponent(), msg);
@@ -148,10 +159,23 @@ public class ClientListener extends Thread {
                             TheClient.ExitRoom();
                             break;
                         case Chat:
-                            if (TheClient.getOpponent() == null)
+                            if (TheClient.getOpponent() == null) {
                                 break;
+                            }
                             msg.content = TheClient.getName() + ": " + msg.content;
                             ServerCtr.Send(TheClient.getOpponent(), msg);
+                            break;
+                        case Sigup:
+                            User newUser = (User) msg.content;
+                            name = newUser.getUserName();
+                            password = newUser.getPassword();
+                            ServerCtr.Sigup(name, password);
+                            break;
+                        case RefreshHis:
+                            List<History> his = ServerCtr.getAllHis(TheClient.getId());
+                            Message hisMsg = new Message(Message.Message_Type.RefreshHis);
+                            hisMsg.content = his;
+                            ServerCtr.Send(TheClient, hisMsg);
                             break;
 
                     }

@@ -31,6 +31,15 @@ public class Client {
     ObjectInputStream sInput;
     ClientListener listenThread;
     Client opponent;
+    boolean isLogin = false;
+
+    public boolean isIsLogin() {
+        return isLogin;
+    }
+
+    public void setIsLogin(boolean isLogin) {
+        this.isLogin = isLogin;
+    }
 
     public Client(Socket gelenSoket, int id) {
         this.soket = gelenSoket;
@@ -148,6 +157,5 @@ public class Client {
     public void setOpponent(Client opponent) {
         this.opponent = opponent;
     }
-    
-    
+
 }

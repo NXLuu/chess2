@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.History;
 //import logicAplication.UserDAO;
 import model.Message;
 import server.logicApplication.UserDAO;
@@ -25,7 +26,7 @@ import model.User;
 public class ServerCtr {
 
     public static ServerSocket serverSocket;
-    public static int IdClient = 0;
+    public static int IdClient = 1000;
     public static int IdRoom = 0;
     public static int port = 0;
     public static NewClientListener runThread;
@@ -79,6 +80,19 @@ public class ServerCtr {
 
         User user = userDao.Login(userName, password);
         return user;
+    }
+    public static void Sigup(String userName, String password) throws java.sql.SQLException {
+        UserDAO userDao = new UserDAO();
+
+        userDao.insertUser(userName, password);
+
+    }
+    
+    public static List<History> getAllHis(int id) throws SQLException {
+
+        UserDAO userDao = new UserDAO();
+        List<History> his = userDao.getHistory(id);
+        return his;
     }
 
     public static List<User> getAllUsers() throws SQLException {

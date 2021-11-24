@@ -171,6 +171,8 @@ public final class Game {
     }
 
     public boolean opponentCheckMate() {
+        if (gameOver) 
+            return true;
         if (mySide) {
             for (Piece p : wPieces) {
                 if (!p.getMoves().isEmpty()) {

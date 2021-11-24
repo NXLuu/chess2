@@ -78,6 +78,7 @@ public class ClientController {
         public void actionPerformed(ActionEvent e) {
             SignUpJlog sigupLog = new SignUpJlog(menu, true);
             sigupLog.getjButton1().addActionListener(er -> signUp(sigupLog));
+            sigupLog.setVisible(true);
         }
 
     }
@@ -124,7 +125,7 @@ public class ClientController {
 
     public void signUp(SignUpJlog sigupLog) {
         User user = sigupLog.getUser();
-        Message msg = new Message(Message.Message_Type.JoinServer);
+        Message msg = new Message(Message.Message_Type.Sigup);
         msg.content = user;
         Client.Send(msg);
         sigupLog.dispose();

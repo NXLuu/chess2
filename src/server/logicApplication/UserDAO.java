@@ -5,12 +5,14 @@
  */
 package server.logicApplication;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import model.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.History;
 import server.model.Client;
 
 /**
@@ -22,6 +24,40 @@ public class UserDAO extends DAO {
     public UserDAO() throws SQLException {
         super();
         this.connect();
+    }
+
+    public void insertHistery(int userId, String opponentName, boolean isWin) {
+        String sql = "INSERT INTO `chess`.`history` (`usersId`, `date`, `oponentName`, `win`) VALUES (?, ?, ?, ?); ";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setDate(2, new Date(0));
+            ps.setString(3, opponentName);
+            if (isWin) {
+                ps.setString(4, "Win");
+            } else {
+                ps.setString(4, "Loss");
+            }
+            ps.execute();
+
+        } catch (SQLException e) {
+        }
+
+    }
+
+    public void insertUser(String username, String password) {
+        String sql = "INSERT INTO `chess`.`users` (`username`, `password`, `elo`, `win`) VALUES (?, ?, ?, ?);";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setInt(3, 0);
+            ps.setInt(4, 0);
+            ps.execute();
+
+        } catch (SQLException e) {
+        }
+
     }
 
     public User Login(String username, String password) {
@@ -51,7 +87,7 @@ public class UserDAO extends DAO {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT *\n"
                 + "FROM Users\n"
-                +"ORDER BY elo DESC";
+                + "ORDER BY elo DESC";
         try {
             PreparedStatement ps = jdbcConnection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -100,9 +136,28 @@ public class UserDAO extends DAO {
 
         }
     }
-    
+
+    public List<History> getHistory(int id) throws SQLException {
+        List<History> historys = new ArrayList<>();
+        String sql = "SELECT *\n"
+                + "FROM history WHERE usersId = ?\n"
+                + "ORDER BY date DESC";
+        PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String oponentName = rs.getString("oponentName");
+            String win = rs.getString("win");
+            Date date = rs.getDate("date");
+             
+            historys.add(new History(date, oponentName, win));
+        }
+        return historys;
+    }
+
     public void UpdateWin(int id) {
-        String sql = "Update Users SET win = win + 10 WHERE id = ?";
+        String sql = "Update Users SET win = win + 1 WHERE id = ?";
         try {
             PreparedStatement ps = jdbcConnection.prepareStatement(sql);
             ps.setInt(1, id);

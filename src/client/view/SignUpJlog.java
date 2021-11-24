@@ -22,7 +22,7 @@ public class SignUpJlog extends javax.swing.JDialog {
     public SignUpJlog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setVisible(modal);
+      
     }
 
     /**

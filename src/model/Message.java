@@ -14,7 +14,7 @@ public class Message implements java.io.Serializable {
     public static enum Message_Type {
         JoinServer, CreateRoom, ReturnRoomsNames, JoinRoom, MovePiece, Attack, Text, Selected, CheckMate,
         Start, Upgrade, Ready, ExitRoom,CloseRoom,
-        Login, Register, LoginFailed, LoginSucced, EnemyLoss, Chat
+        Login, Register, LoginFailed, LoginSucced, EnemyLoss, Chat, Sigup, RefreshHis
     }
 
     public Message_Type type;

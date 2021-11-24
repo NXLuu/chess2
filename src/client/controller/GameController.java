@@ -16,8 +16,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.SwingUtilities;
 import model.Client;
+import model.History;
 import model.Message;
 import model.User;
 
@@ -52,6 +54,23 @@ public class GameController {
         }
     }
 
+    public void timeOut() {
+        Game.sendLossInfor();
+        finishGame(false);
+    }
+
+    public void enemyExit() {
+        gameFrame.enemyExitRoom();
+        gameFrame.enemyReady = false;
+        timer.StopTimer();
+        gameFrame.resetTime();
+        if (game.gameIsStarted) {
+            finishGame(true);
+        }
+        game.gameIsStarted = false;
+
+    }
+
     public void initGamePanel() {
         gamePanel.addMouseListener(new MouseGamePanel());
         gamePanel.addMouseMotionListener(new MouseGamePanel());
@@ -62,6 +81,7 @@ public class GameController {
         gameclient.addCreateRoomLis(new CreateRoomListener());
         gameclient.addjoinRoomLis(new JoinRoomListener());
         gameclient.addRefreshRoomLis(new RefreshRoomListener());
+        gameclient.addRefreshHis(new RefreshHisListener());
         gameclient.setVisible(true);
     }
 
@@ -72,6 +92,12 @@ public class GameController {
     public void initGameFrame(String side, String timeSetting, String userName, String opponentName, boolean isRoomOwner) {
         gameFrame = new GameFrame(side, timeSetting, userName, opponentName, isRoomOwner);
         gameFrame.addListener(new StartListener(), new ExitListner(), new RestartGame(), new ChatListener());
+        gameFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                exit();
+            }
+        });
     }
 
     // handler clientGame
@@ -83,7 +109,7 @@ public class GameController {
     // Handler game
     public void startGame() {
         game.gameIsStarted = true;
-        timer = new Timer(gameFrame);
+        timer = new Timer(this, Integer.parseInt(gameFrame.getTimeSettings()));
         timer.setTimeStart(gameFrame.getTimeSettings());
         if (gameFrame.isRoomOwner) {
             timer.ResumeTimer();
@@ -98,12 +124,13 @@ public class GameController {
         gamePanel.setVisible(true);
         gameFrame.addGamePanel(gamePanel);
         gameFrame.setVisible(true);
-
+        timer = new Timer(this, Integer.parseInt(gameFrame.getTimeSettings()));
         game.start();
     }
 
     public void finishGame(boolean isWin) {
         gameFrame.showFinishMessage(isWin);
+        timer.StopTimer();
         game.gameIsStarted = false;
     }
 
@@ -129,6 +156,10 @@ public class GameController {
     public void refreshUsers(ArrayList<User> userList) {
         gameclient.setListUsers(userList);
     }
+    
+    public void refreshHis(List<History> hisList) {
+        gameclient.setHist(hisList);
+    }
 
     // Action listener GameClient
     class CreateRoomListener implements ActionListener {
@@ -152,6 +183,15 @@ public class GameController {
         public void actionPerformed(ActionEvent e) {
             gameclient.clearList();
             Message msg = new Message(Message.Message_Type.ReturnRoomsNames);
+            Client.Send(msg);
+        }
+    }
+    
+    class RefreshHisListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Message msg = new Message(Message.Message_Type.RefreshHis);
             Client.Send(msg);
         }
     }
@@ -202,13 +242,18 @@ public class GameController {
 
     }
 
+    public void exit() {
+        Client.Send(new Message(Message.Message_Type.ExitRoom));
+        gameFrame.isRoomOwner = false;
+        gameFrame.resetTime();
+        closeGame();
+    }
+
     class ExitListner implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Client.Send(new Message(Message.Message_Type.ExitRoom));
-            gameFrame.isRoomOwner = false;
-            closeGame();
+            exit();
 
         }
 
@@ -240,33 +285,6 @@ public class GameController {
 
         }
 
-//        @Override
-//        public void mouseMoved(MouseEvent e) {
-//            // temp index i and j for the gui
-//            ti = e.getX() / Piece.size;
-//            tj = e.getY() / Piece.size;
-//            if (Game.board.getPiece(ti, tj) != null) {
-//                setCursor(new Cursor(Cursor.HAND_CURSOR));
-//            } else {
-//                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//            }
-//            revalidate();
-//            repaint();
-//        }
-//        @Override
-//        public void mouseDragged(MouseEvent e) {
-//            if (!Game.drag && game.active != null) {
-//                game.active = null;
-//            }
-//            if (SwingUtilities.isLeftMouseButton(e)) {
-//                game.selectPiece(e.getX() / Piece.size, e.getY() / Piece.size);
-//                Game.drag = true;
-//                xx = e.getX();
-//                yy = e.getY();
-//            }
-//            revalidate();
-//            repaint();
-//        }
         @Override
         public void mouseReleased(MouseEvent e) {
             int x = e.getX() / Piece.size;

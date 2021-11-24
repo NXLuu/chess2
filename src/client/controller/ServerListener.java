@@ -7,10 +7,12 @@ package client.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Client;
+import model.History;
 import model.Message;
 import model.User;
 
@@ -66,7 +68,7 @@ public class ServerListener extends Thread {
                         gameController.startGame();
                         break;
                     case ExitRoom:
-                        gameController.getGameFrame().enemyLoss(received);
+                        gameController.enemyExit();
                         gameController.getGameFrame().enemyExitRoom();
                         gameController.getGameFrame().isRoomOwner = true;
                         break;
@@ -86,7 +88,10 @@ public class ServerListener extends Thread {
                         gameController.setTextGameFrame((String)received.content, false);
 
                         break;
-
+                    case RefreshHis:
+                        gameController.refreshHis((List<History>) received.content );
+                        break;
+                        
                 }
 
             } catch (IOException | ClassNotFoundException ex) {

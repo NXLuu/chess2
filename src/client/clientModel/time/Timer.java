@@ -5,10 +5,12 @@
  */
 package client.clientModel.time;
 
+
 import client.view.GameFrame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+import client.controller.GameController;
 
 /**
  *
@@ -17,7 +19,7 @@ import javax.swing.JLabel;
 public class Timer extends Thread {
 
     private int ourTime, opponentTime;
-    private GameFrame gameFrame;
+    private GameController gaemCtr;
 
     private boolean isRunning;
 
@@ -27,8 +29,9 @@ public class Timer extends Thread {
 
     private JLabel clock2;
 
-    public Timer(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
+    public Timer(GameController gaemCtr, int time) {
+        this.gaemCtr = gaemCtr;
+        
     }
 
     
@@ -50,14 +53,14 @@ public class Timer extends Thread {
             try {
                 if (ourTimerRunning) {
                     ourTime--;
-                    gameFrame.setOurTime(String.valueOf(ourTime));
+                    gaemCtr.getGameFrame().setOurTime(String.valueOf(ourTime));
                 } else {
                     opponentTime--;
-                    gameFrame.setOppTime(String.valueOf(opponentTime));
+                    gaemCtr.getGameFrame().setOppTime(String.valueOf(opponentTime));
                 }
-//                if(ourTime <= 0){
-//                    Board.Game.CheckMateWTime();
-//                }
+                if(ourTime <= 0){
+                    gaemCtr.timeOut();
+                }
                 Thread.sleep(1000);  
 
             } catch (InterruptedException ex) {
@@ -86,11 +89,11 @@ public class Timer extends Thread {
         ourTimerRunning = true;
     }
 
-    public void StopTimer() {
+    public synchronized void StopTimer() {
         isRunning = false;
     }
 
-    public int GetTime() {
+    public synchronized int GetTime() {
         return this.ourTime;
     }
 
