@@ -84,7 +84,6 @@ public class ClientListener extends Thread {
                         case ReturnRoomsNames:
                             Message newMsg = new Message(Message.Message_Type.ReturnRoomsNames);
                             newMsg.content = ServerCtr.ReturnRooms();
-                            System.out.println("111");
                             ServerCtr.Send(TheClient, newMsg);
                             System.out.println("User " + TheClient.getName() + " refreshing rooms...");
                             break;
@@ -98,6 +97,7 @@ public class ClientListener extends Thread {
                                 TheClient.getOpponent().setOpponent(TheClient);
                                 TheClient.setRoomName(msg.content.toString());
                                 TheClient.setRoomId(opponent.getRoomId());
+                                TheClient.setTimeSetting(opponent.getTimeSetting());
 
                                 Message joinMsgToRoomOwner = new Message(Message.Message_Type.JoinRoom);
                                 joinMsgToRoomOwner.content = TheClient.getName();

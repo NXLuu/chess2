@@ -55,7 +55,7 @@ public class GameController {
     }
 
     public void timeOut() {
-        Game.sendLossInfor();
+        game.sendLossInfor();
         finishGame(false);
     }
 
@@ -111,13 +111,14 @@ public class GameController {
         game.gameIsStarted = true;
         timer = new Timer(this, Integer.parseInt(gameFrame.getTimeSettings()));
         timer.setTimeStart(gameFrame.getTimeSettings());
-        if (gameFrame.isRoomOwner) {
+        if (game.checkMyTurn()) {
             timer.ResumeTimer();
         }
         timer.StartTimer(0);
     }
 
     public void initGame(boolean side) {
+        
         game = new Game(side, this);
         gamePanel = new GamePanel(side, game);
         initGamePanel();
@@ -136,17 +137,18 @@ public class GameController {
 
     public void joinGame(ArrayList<String> informations) {
         initGameFrame(informations.get(1), informations.get(2), informations.get(0), informations.get(3), false);
-        boolean side = informations.get(0) == "white";
+        boolean side = "white".equals(informations.get(1));
         initGame(side);
         gameFrame.setVisible(true);
     }
 
     public void closeGame() {
         gameFrame.dispose();
+        gameFrame = null;
     }
 
     public void resetGame() {
-        game.reset();
+        game.close();
     }
 
     public void refreshRooms(ArrayList<String> rooms) {
@@ -171,9 +173,10 @@ public class GameController {
 
             ArrayList<String> roomInfor = (ArrayList<String>) msg.content;
 
-            initGameFrame(gameclient.getUserName(), roomInfor.get(1), roomInfor.get(2), "", true);
+            initGameFrame( roomInfor.get(2), roomInfor.get(1),  gameclient.getUserName(), "", true);
             gameFrame.isRoomOwner = true;
-            initGame(true);
+            boolean side = "white".equals(roomInfor.get(2));
+            initGame(side);
         }
     }
 
@@ -246,6 +249,7 @@ public class GameController {
         Client.Send(new Message(Message.Message_Type.ExitRoom));
         gameFrame.isRoomOwner = false;
         gameFrame.resetTime();
+        resetGame();
         closeGame();
     }
 
@@ -276,7 +280,7 @@ public class GameController {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 int x = e.getX() / Piece.size;
                 int y = e.getY() / Piece.size;
-                Game.drag = false;
+                game.drag = false;
                 game.active = null;
                 game.selectPiece(x, y);
                 gamePanel.revalidate();

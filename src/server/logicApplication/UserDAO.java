@@ -31,7 +31,7 @@ public class UserDAO extends DAO {
         try {
             PreparedStatement ps = jdbcConnection.prepareStatement(sql);
             ps.setInt(1, userId);
-            ps.setDate(2, new Date(0));
+            ps.setDate(2, new Date(System.currentTimeMillis()));
             ps.setString(3, opponentName);
             if (isWin) {
                 ps.setString(4, "Win");

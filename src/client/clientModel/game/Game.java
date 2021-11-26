@@ -69,6 +69,18 @@ public final class Game {
         return player == mySide;
     }
 
+    public void close() {
+        gameOver = false;
+        player = true;
+        active = null;
+        board = new Board();
+        AllPieces = new ArrayList<>();
+        allPossiblesMoves = new ArrayList<>();
+        allPlayersMove = new ArrayList<>();
+        allEnemysMove = new ArrayList<>();
+        PieceImages pieceImages = new PieceImages();
+    }
+
     public void reset() {
         gameOver = false;
         player = true;
@@ -171,8 +183,9 @@ public final class Game {
     }
 
     public boolean opponentCheckMate() {
-        if (gameOver) 
+        if (gameOver) {
             return true;
+        }
         if (mySide) {
             for (Piece p : wPieces) {
                 if (!p.getMoves().isEmpty()) {
@@ -307,7 +320,7 @@ public final class Game {
             drag = false;
 
         }
-        
+
         return false;
     }
 

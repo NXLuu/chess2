@@ -113,6 +113,7 @@ public class GameClient extends javax.swing.JFrame {
     public GameClient(User user) {
         initComponents();
         this.user = user;
+        this.userName = user.getUserName();
         jLabel1.setText("Username: " + user.getUserName());
         lm1 = new DefaultListModel();
 
