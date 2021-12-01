@@ -14,7 +14,9 @@ import javax.swing.JOptionPane;
 import model.Client;
 import model.History;
 import model.Message;
+import model.ReqFr;
 import model.User;
+import server.controller.ServerCtr;
 
 /**
  *
@@ -85,13 +87,27 @@ public class ServerListener extends Thread {
 
                         break;
                     case Chat:
-                        gameController.setTextGameFrame((String)received.content, false);
+                        gameController.setTextGameFrame((String) received.content, false);
 
                         break;
                     case RefreshHis:
-                        gameController.refreshHis((List<History>) received.content );
+                        gameController.refreshHis((List<History>) received.content);
                         break;
-                        
+                    case SearchUser:
+                        List<User> userSearch = (ArrayList<User>) received.content;
+                        gameController.setUserSearch(userSearch);
+                        break;
+                    case SendFriendReq:
+                        gameController.reloadFrReq();
+                        break;
+                    case ReloadFriendReq:
+                        List<ReqFr> reqList = (ArrayList<ReqFr>) received.content;
+                        gameController.setFrReq(reqList);
+                        break;
+                    case GetFriendList:
+                        List<User> users = (ArrayList<User>) received.content;
+                        gameController.setFrs(users);
+                        break;
                 }
 
             } catch (IOException | ClassNotFoundException ex) {

@@ -9,11 +9,13 @@ import server.model.Client;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.History;
 import model.Message;
+import model.ReqFr;
 import model.User;
 import server.logicApplication.UserDAO;
 
@@ -34,9 +36,11 @@ public class ClientListener extends Thread {
         while (TheClient.getSoket().isConnected()) {
             try {
                 try {
+                    Message sendMsg = new Message(Message.Message_Type.Text);
                     Message msg = (Message) TheClient.getsInput().readObject();
                     String name;
                     String password;
+                    UserDAO dao = new UserDAO();
                     switch (msg.type) {
                         case JoinServer:
                             name = msg.content.toString();
@@ -146,7 +150,7 @@ public class ClientListener extends Thread {
                             if (TheClient.isIsLogin()) {
                                 userDao.insertHistery(TheClient.getId(), TheClient.getOpponent().getName(), false);
                             }
-                          
+
                             break;
                         case Ready:
                             ServerCtr.Send(TheClient.getOpponent(), msg);
@@ -176,6 +180,76 @@ public class ClientListener extends Thread {
                             Message hisMsg = new Message(Message.Message_Type.RefreshHis);
                             hisMsg.content = his;
                             ServerCtr.Send(TheClient, hisMsg);
+                            break;
+                        case GetFriendReq:
+                            if (!TheClient.isIsLogin()) {
+                                break;
+                            }
+                            List<ReqFr> req = ServerCtr.getAllFriendReq(TheClient.getId());
+                            Message msgFr = new Message(Message.Message_Type.GetFriendReq);
+                            msgFr.content = req;
+                            ServerCtr.Send(TheClient, msgFr);
+                            break;
+                        case SendFriendReq:
+                            if (!TheClient.isIsLogin()) {
+                                break;
+                            }
+                            int idSent = (int) msg.content;
+                            dao.createFrReq(idSent, TheClient.getId());
+                            Message msgReq = new Message(Message.Message_Type.SendFriendReq);
+                            Client c = ServerCtr.getClientById(idSent);
+                            if (c != null) {
+                                ServerCtr.Send(c, msgReq);
+                            }
+                            break;
+                        case ReloadFriendReq:
+                            sendMsg.type = Message.Message_Type.ReloadFriendReq;
+                            sendMsg.content = dao.getFriendReq(TheClient.getId());
+                            ServerCtr.Send(TheClient, sendMsg);
+                            break;
+                        case AcceptReq:
+                            int idReq = (int) msg.content;
+                            dao.getFriendReqById(idReq);
+                            ReqFr reqFr = dao.getFriendReqById(idReq);
+
+                            dao.createFriendShip(reqFr.getIdSend(), reqFr.getIdRev());
+                            dao.createFriendShip(reqFr.getIdRev(), reqFr.getIdSend());
+                            dao.deleteFr(idReq);
+                            break;
+                        case GetFriendList:
+                            sendMsg.type = Message.Message_Type.GetFriendList;
+                            sendMsg.content = dao.getFr(TheClient.getId());
+                            ServerCtr.Send(TheClient, sendMsg);
+                            break;
+                        case SearchUser:
+                            name = msg.content.toString();
+                            List<User> userList = dao.search(name);
+                            List<User> frList = dao.getFr(TheClient.getId());
+                            List<ReqFr> frs = dao.getFriendReq(TheClient.getId());
+                            Iterator itr = userList.iterator();
+                            while (itr.hasNext()) {
+                                User x = (User) itr.next();
+                                if (x.getId() == TheClient.getId()) {
+                                    itr.remove();
+                                    break;
+                                }
+                                for (User fr : frList) {
+                                    if (x.getId() == fr.getId()) {
+                                        itr.remove();
+                                        break;
+                                    }
+                                }
+
+                                for (ReqFr fr1 : frs) {
+                                    if (x.getId() == fr1.getIdRev()) {
+                                        itr.remove();
+                                        break;
+                                    }
+                                }
+                            }
+                            Message msgUser = new Message(Message.Message_Type.SearchUser);
+                            msgUser.content = userList;
+                            ServerCtr.Send(TheClient, msgUser);
                             break;
 
                     }

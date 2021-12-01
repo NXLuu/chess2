@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import model.History;
 //import logicAplication.UserDAO;
 import model.Message;
+import model.ReqFr;
 import server.logicApplication.UserDAO;
 import server.model.Client;
 import model.User;
@@ -81,13 +82,23 @@ public class ServerCtr {
         User user = userDao.Login(userName, password);
         return user;
     }
+
     public static void Sigup(String userName, String password) throws java.sql.SQLException {
         UserDAO userDao = new UserDAO();
 
         userDao.insertUser(userName, password);
 
     }
-    
+
+    public static Client getClientById(int id) {
+        for (Client c : Clients) {
+            if (c.getId() == id) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public static List<History> getAllHis(int id) throws SQLException {
 
         UserDAO userDao = new UserDAO();
@@ -101,10 +112,16 @@ public class ServerCtr {
         List<User> userList = userDao.getAllUsers();
         return userList;
     }
-    
-     public static List<User> updateElo() throws SQLException {
+
+    public static List<ReqFr> getAllFriendReq(int id) throws SQLException {
+        UserDAO userDao = new UserDAO();
+        return userDao.getFriendReq(id);
+    }
+
+    public static List<User> updateElo() throws SQLException {
         UserDAO userDao = new UserDAO();
         List<User> userList = userDao.getAllUsers();
         return userList;
     }
+
 }

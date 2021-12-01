@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import model.Client;
 import model.History;
 import model.Message;
+import model.ReqFr;
 import model.User;
 
 /**
@@ -78,6 +79,11 @@ public class GameController {
 
     public void initGameClient(User user) {
         gameclient = new GameClient(user);
+        gameclient.addResetFr(new ResetFrListener());
+        gameclient.addAccFrReq(new AcceptFrReqListener());
+        gameclient.addResetFrReq(new ResetFrReqListener());
+        gameclient.addSearch(new SearchUserListener());
+        gameclient.addSendFrReq(new SendFriendReq());
         gameclient.addCreateRoomLis(new CreateRoomListener());
         gameclient.addjoinRoomLis(new JoinRoomListener());
         gameclient.addRefreshRoomLis(new RefreshRoomListener());
@@ -118,7 +124,7 @@ public class GameController {
     }
 
     public void initGame(boolean side) {
-        
+
         game = new Game(side, this);
         gamePanel = new GamePanel(side, game);
         initGamePanel();
@@ -151,14 +157,30 @@ public class GameController {
         game.close();
     }
 
+    public void reloadFrReq() {
+
+    }
+
     public void refreshRooms(ArrayList<String> rooms) {
         gameclient.setListRoom(rooms);
+    }
+
+    public void setUserSearch(List<User> users) {
+        gameclient.setUserSearch(users);
+    }
+
+    public void setFrs(List<User> users) {
+        gameclient.setFrList(users);
+    }
+
+    public void setFrReq(List<ReqFr> reqs) {
+        gameclient.setFrReq(reqs);
     }
 
     public void refreshUsers(ArrayList<User> userList) {
         gameclient.setListUsers(userList);
     }
-    
+
     public void refreshHis(List<History> hisList) {
         gameclient.setHist(hisList);
     }
@@ -173,10 +195,63 @@ public class GameController {
 
             ArrayList<String> roomInfor = (ArrayList<String>) msg.content;
 
-            initGameFrame( roomInfor.get(2), roomInfor.get(1),  gameclient.getUserName(), "", true);
+            initGameFrame(roomInfor.get(2), roomInfor.get(1), gameclient.getUserName(), "", true);
             gameFrame.isRoomOwner = true;
             boolean side = "white".equals(roomInfor.get(2));
             initGame(side);
+        }
+    }
+    
+
+    class ResetFrListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Message msg = new Message(Message.Message_Type.GetFriendList);
+            Client.Send(msg);
+        }
+    }
+
+    class AcceptFrReqListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Message msg = new Message(Message.Message_Type.AcceptReq);
+            msg.content = gameclient.getSelectedFrReq();
+            Client.Send(msg);
+        }
+    }
+
+    class ResetFrReqListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Message msg = new Message(Message.Message_Type.ReloadFriendReq);
+            Client.Send(msg);
+        }
+    }
+
+    class SearchUserListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Message msg = new Message(Message.Message_Type.SearchUser);
+            msg.content = gameclient.getSearchName();
+            Client.Send(msg);
+        }
+    }
+
+    class SendFriendReq implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String idStr = gameclient.getSelectUser();
+            if (idStr == null) {
+                return;
+            }
+            int id = Integer.parseInt(idStr);
+            Message msg = new Message(Message.Message_Type.SendFriendReq);
+            msg.content = id;
+            Client.Send(msg);
         }
     }
 
@@ -189,7 +264,7 @@ public class GameController {
             Client.Send(msg);
         }
     }
-    
+
     class RefreshHisListener implements ActionListener {
 
         @Override

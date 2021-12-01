@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.History;
+import model.ReqFr;
 import server.model.Client;
 
 /**
@@ -58,6 +59,128 @@ public class UserDAO extends DAO {
         } catch (SQLException e) {
         }
 
+    }
+
+    public List<User> getFr(int id) {
+        List<User> frs = new ArrayList<>();
+        String sql = "SELECT * FROM friend WHERE idMe = ?";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int idFr = rs.getInt("idFriend");
+                String sql1 = "SELECT * FROM users WHERE id = ?";
+                PreparedStatement ps1 = jdbcConnection.prepareStatement(sql1);
+                ps1.setInt(1, idFr);
+                ps1.execute();
+                ResultSet rs1 = ps1.executeQuery();
+
+                while (rs1.next()) {
+                    String userName = rs1.getString("username");
+        
+                    int elo = rs1.getInt("elo");
+                    int win = rs1.getInt("win");
+
+                    User user = new User(userName, "", elo, win);
+                    user.setId(idFr);
+                    frs.add(user);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return frs;
+    }
+
+    public void createFrReq(int idRev, int idSend) {
+        String sql = "INSERT INTO `chess`.`request` (`idSend`, `idRev`, `date`) VALUES (?, ?, ?); ";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, idSend);
+            ps.setInt(2, idRev);
+            ps.setDate(3, new Date(System.currentTimeMillis()));
+            ps.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createFriendShip(int id1, int id2) {
+        String sql = "INSERT INTO `chess`.`friend` (`idMe`, `idFriend`) VALUES (?, ?);";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, id1);
+            ps.setInt(2, id2);
+            ps.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteFr(int id) {
+        String sql = "DELETE FROM request WHERE id = ?";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ReqFr getFriendReqById(int id) {
+        List<ReqFr> reqFr = new ArrayList<>();
+        String sql = "SELECT * FROM request WHERE id = ?";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                return new ReqFr(null, null, id, rs.getInt("idSend"), rs.getInt("idRev"));
+            }
+        } catch (SQLException e) {
+        }
+        return null;
+    }
+
+    public List<ReqFr> getFriendReq(int id) {
+        List<ReqFr> reqFr = new ArrayList<>();
+        String sql = "SELECT * FROM request WHERE idRev = ?";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int idReq = rs.getInt("id");
+                int idSend = rs.getInt("idSend");
+                Date date = rs.getDate("date");
+                String sql1 = "SELECT * FROM users WHERE id = ?";
+                PreparedStatement ps1 = jdbcConnection.prepareStatement(sql1);
+                ps1.setInt(1, idSend);
+                ps1.execute();
+                ResultSet rs1 = ps1.executeQuery();
+
+                while (rs1.next()) {
+                    String userName = rs1.getString("username");
+                    reqFr.add(new ReqFr(userName, date, idReq, idSend, rs.getInt("idRev")));
+                }
+            }
+
+        } catch (SQLException e) {
+        }
+
+        return reqFr;
     }
 
     public User Login(String username, String password) {
@@ -108,7 +231,30 @@ public class UserDAO extends DAO {
         return userList;
     }
 
-    public Client getUserByID(int id) {
+    public List<User> search(String name) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT *\n"
+                + "FROM Users\n"
+                + "WHERE username like ?";
+        try {
+            PreparedStatement ps = jdbcConnection.prepareStatement(sql);
+            ps.setString(1, "%" + name + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String userName = rs.getString("username");
+                User user = new User();
+                user.setId(id);
+                user.setUserName(userName);
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+        }
+        return userList;
+    }
+
+    public User getUserByID(int id) {
         String sql = "SELECT *\n"
                 + "FROM Users\n"
                 + "WHERE id = ?";
@@ -150,7 +296,7 @@ public class UserDAO extends DAO {
             String oponentName = rs.getString("oponentName");
             String win = rs.getString("win");
             Date date = rs.getDate("date");
-             
+
             historys.add(new History(date, oponentName, win));
         }
         return historys;

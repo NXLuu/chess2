@@ -16,6 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `friend`
+--
+
+DROP TABLE IF EXISTS `friend`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `friend` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idMe` int DEFAULT NULL,
+  `idFriend` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `friend`
+--
+
+LOCK TABLES `friend` WRITE;
+/*!40000 ALTER TABLE `friend` DISABLE KEYS */;
+INSERT INTO `friend` VALUES (3,2,4),(4,4,2),(5,2,1),(6,1,2);
+/*!40000 ALTER TABLE `friend` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `history`
 --
 
@@ -31,7 +56,7 @@ CREATE TABLE `history` (
   PRIMARY KEY (`id`),
   KEY `fk_idx` (`usersId`),
   CONSTRAINT `fk` FOREIGN KEY (`usersId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,8 +65,33 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES (1,1,'2021-02-11','Long','Thắng'),(2,4,'1970-01-01','fdsf','Win'),(3,3,'1970-01-01','test','Win'),(4,3,'1970-01-01','test','Win'),(5,3,'1970-01-01','test','Win'),(6,3,'1970-01-01','test','Win'),(7,4,'1970-01-01','nam','Win'),(8,3,'1970-01-01','test','Loss'),(9,4,'1970-01-01','nam','Win'),(10,3,'1970-01-01','test','Loss'),(11,3,'1970-01-01','test','Win'),(12,4,'1970-01-01','nam','Loss'),(13,3,'1970-01-01','test','Win'),(14,4,'1970-01-01','nam','Loss'),(15,3,'1970-01-01','test','Win'),(16,4,'1970-01-01','nam','Loss'),(17,3,'1970-01-01','test','Win'),(18,4,'1970-01-01','nam','Loss'),(19,3,'1970-01-01','test','Win'),(20,4,'1970-01-01','nam','Loss'),(21,3,'1970-01-01','test','Win'),(22,4,'1970-01-01','nam','Loss'),(23,3,'1970-01-01','test','Win'),(24,4,'1970-01-01','nam','Loss'),(25,3,'1970-01-01','test','Win'),(26,4,'1970-01-01','nam','Loss'),(27,3,'1970-01-01','test','Win'),(28,4,'1970-01-01','nam','Loss'),(29,3,'1970-01-01','test','Win'),(30,4,'1970-01-01','nam','Loss');
+INSERT INTO `history` VALUES (1,1,'2021-02-11','Long','Thắng'),(2,4,'1970-01-01','fdsf','Win'),(3,3,'1970-01-01','test','Win'),(4,3,'1970-01-01','test','Win'),(5,3,'1970-01-01','test','Win'),(6,3,'1970-01-01','test','Win'),(7,4,'1970-01-01','nam','Win'),(8,3,'1970-01-01','test','Loss'),(9,4,'1970-01-01','nam','Win'),(10,3,'1970-01-01','test','Loss'),(11,3,'1970-01-01','test','Win'),(12,4,'1970-01-01','nam','Loss'),(13,3,'1970-01-01','test','Win'),(14,4,'1970-01-01','nam','Loss'),(15,3,'1970-01-01','test','Win'),(16,4,'1970-01-01','nam','Loss'),(17,3,'1970-01-01','test','Win'),(18,4,'1970-01-01','nam','Loss'),(19,3,'1970-01-01','test','Win'),(20,4,'1970-01-01','nam','Loss'),(21,3,'1970-01-01','test','Win'),(22,4,'1970-01-01','nam','Loss'),(23,3,'1970-01-01','test','Win'),(24,4,'1970-01-01','nam','Loss'),(25,3,'1970-01-01','test','Win'),(26,4,'1970-01-01','nam','Loss'),(27,3,'1970-01-01','test','Win'),(28,4,'1970-01-01','nam','Loss'),(29,3,'1970-01-01','test','Win'),(30,4,'1970-01-01','nam','Loss'),(31,5,'1970-01-01','an','Loss'),(32,5,'2021-11-25','an','Loss'),(33,5,'2021-11-25','an','Win'),(34,5,'2021-11-25','an','Loss'),(35,5,'2021-11-25','an','Loss');
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `request`
+--
+
+DROP TABLE IF EXISTS `request`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `request` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idSend` int DEFAULT NULL,
+  `IdRev` int DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `request`
+--
+
+LOCK TABLES `request` WRITE;
+/*!40000 ALTER TABLE `request` DISABLE KEYS */;
+/*!40000 ALTER TABLE `request` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -58,7 +108,7 @@ CREATE TABLE `users` (
   `elo` int DEFAULT '0',
   `win` int DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +117,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'luu','12345',10,1),(2,'ha','12456',20,2),(3,'nam','12345',170,17),(4,'test','test',30,3);
+INSERT INTO `users` VALUES (1,'luu','12345',10,1),(2,'ha','12456',20,2),(3,'nam','12345',170,17),(4,'test','test',30,3),(5,'long','12345',10,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -80,4 +130,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-25  6:22:23
+-- Dump completed on 2021-12-01 22:32:25
