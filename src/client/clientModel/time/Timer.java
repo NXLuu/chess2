@@ -5,8 +5,6 @@
  */
 package client.clientModel.time;
 
-
-import client.view.GameFrame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -31,15 +29,14 @@ public class Timer extends Thread {
 
     public Timer(GameController gaemCtr, int time) {
         this.gaemCtr = gaemCtr;
-        
+
     }
 
-    
     public Timer(JLabel clock1, JLabel clock2) {
         this.clock1 = clock1;
         this.clock2 = clock2;
     }
-    
+
     public void setTimeStart(String time) {
         ourTime = Integer.parseInt(time);
         opponentTime = Integer.parseInt(time);
@@ -58,10 +55,10 @@ public class Timer extends Thread {
                     opponentTime--;
                     gaemCtr.getGameFrame().setOppTime(String.valueOf(opponentTime));
                 }
-                if(ourTime <= 0){
+                if (ourTime <= 0) {
                     gaemCtr.timeOut();
                 }
-                Thread.sleep(1000);  
+                Thread.sleep(1000);
 
             } catch (InterruptedException ex) {
                 Logger.getLogger(Timer.class.getName()).log(Level.SEVERE, null, ex);

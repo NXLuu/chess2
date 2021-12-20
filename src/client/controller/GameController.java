@@ -17,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.Client;
 import model.History;
@@ -88,6 +89,18 @@ public class GameController {
         gameclient.addjoinRoomLis(new JoinRoomListener());
         gameclient.addRefreshRoomLis(new RefreshRoomListener());
         gameclient.addRefreshHis(new RefreshHisListener());
+        gameclient.setDefaultCloseOperation(GameClient.DO_NOTHING_ON_CLOSE);
+        gameclient.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (JOptionPane.showConfirmDialog(gameclient,
+                        "Are you sure you want to close this window?", "Close Window?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    Client.Send(new Message(Message.Message_Type.Disconnect));
+                }
+            }
+        });
         gameclient.setVisible(true);
     }
 
@@ -97,7 +110,7 @@ public class GameController {
 
     public void initGameFrame(String side, String timeSetting, String userName, String opponentName, boolean isRoomOwner) {
         gameFrame = new GameFrame(side, timeSetting, userName, opponentName, isRoomOwner);
-        gameFrame.addListener(new StartListener(), new ExitListner(), new RestartGame(), new ChatListener());
+        gameFrame.addListener(new StartListener(), new ExitListner(), new RestartGame(), new ChatListener(), new MicListener(), new SpeakerListener());
         gameFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -201,9 +214,9 @@ public class GameController {
             initGame(side);
         }
     }
-    
 
     class ResetFrListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             Message msg = new Message(Message.Message_Type.GetFriendList);
@@ -287,6 +300,34 @@ public class GameController {
     // Action listener GameFrame
     public void setTextGameFrame(String mess, boolean isMe) {
         gameFrame.setChatArea(mess, isMe);
+    }
+
+    class SpeakerListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!gameFrame.isSpeaker()) {
+                Client.audioCtr.startCapture();
+            } else {
+                Client.audioCtr.stopCapture();
+            }
+
+        }
+
+    }
+
+    class MicListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!gameFrame.isMic()) {
+                Client.audioCtr.startSendVoice();
+            } else {
+                Client.audioCtr.stopSendVoid();
+            }
+
+        }
+
     }
 
     class ChatListener implements ActionListener {

@@ -25,7 +25,7 @@ import server.logicApplication.UserDAO;
  */
 public class ClientListener extends Thread {
 
-    Client TheClient;
+    private Client TheClient;
 
     public ClientListener(Client TheClient) {
         this.TheClient = TheClient;
@@ -33,19 +33,26 @@ public class ClientListener extends Thread {
 
     @Override
     public void run() {
-        while (TheClient.getSoket().isConnected()) {
+        while (!TheClient.getSoket().isClosed()) {
             try {
                 try {
-                    Message sendMsg = new Message(Message.Message_Type.Text);
-                    Message msg = (Message) TheClient.getsInput().readObject();
+                    Message msg;
                     String name;
                     String password;
+
+                    if (!TheClient.getSoket().isClosed()) {
+                        msg = (Message) TheClient.getsInput().readObject();
+                    } else {
+                        msg = new Message(Message.Message_Type.Disconnect);
+                    }
+                    Message sendMsg = new Message(Message.Message_Type.Text);
+
                     UserDAO dao = new UserDAO();
                     switch (msg.type) {
                         case JoinServer:
                             name = msg.content.toString();
-
                             TheClient.setName(name);
+                            ServerCtr.Send(TheClient, new Message(Message.Message_Type.ReturnRoomsNames, ServerCtr.ReturnRooms()));
                             System.out.println("User " + name + " has joined the server...");
                             break;
                         case Login:
@@ -84,6 +91,8 @@ public class ClientListener extends Thread {
 
                             ++ServerCtr.IdRoom;
                             System.out.println(TheClient.getName() + " has create a room named : " + roomName);
+
+                            ServerCtr.sendBroadCast(new Message(Message.Message_Type.ReturnRoomsNames, ServerCtr.ReturnRooms()));
                             break;
                         case ReturnRoomsNames:
                             Message newMsg = new Message(Message.Message_Type.ReturnRoomsNames);
@@ -96,8 +105,9 @@ public class ClientListener extends Thread {
                                 System.out.println("Room is full");
                             } else {
                                 Client opponent = ServerCtr.JoinRoom(msg.content.toString());
-
+                                opponent.getCaptureThread().setIpConnect(TheClient.getIpConnect());
                                 TheClient.setOpponent(opponent);
+                                TheClient.getCaptureThread().setIpConnect(opponent.getIpConnect());
                                 TheClient.getOpponent().setOpponent(TheClient);
                                 TheClient.setRoomName(msg.content.toString());
                                 TheClient.setRoomId(opponent.getRoomId());
@@ -123,6 +133,8 @@ public class ClientListener extends Thread {
                                 ServerCtr.Send(TheClient, joinMsgToOpponent);
 
                                 System.out.println("User " + TheClient.getName() + " is joining the room named " + TheClient.getRoomName());
+
+                                ServerCtr.sendBroadCast(new Message(Message.Message_Type.ReturnRoomsNames, ServerCtr.ReturnRooms()));
                             }
 
                             break;
@@ -159,8 +171,12 @@ public class ClientListener extends Thread {
                             ServerCtr.Send(TheClient.getOpponent(), msg);
                             break;
                         case ExitRoom:
-                            ServerCtr.Send(TheClient.getOpponent(), msg);
+                            if (TheClient.getOpponent() != null) {
+                                ServerCtr.Send(TheClient.getOpponent(), msg);
+                            }
                             TheClient.ExitRoom();
+
+                            ServerCtr.sendBroadCast(new Message(Message.Message_Type.ReturnRoomsNames, ServerCtr.ReturnRooms()));
                             break;
                         case Chat:
                             if (TheClient.getOpponent() == null) {
@@ -201,6 +217,12 @@ public class ClientListener extends Thread {
                             if (c != null) {
                                 ServerCtr.Send(c, msgReq);
                             }
+
+                            sendMsg.type = Message.Message_Type.ReloadFriendReq;
+                            sendMsg.content = dao.getFriendReq(idSent);
+                            if (ServerCtr.getClientById(idSent) != null) {
+                                ServerCtr.Send(ServerCtr.getClientById(idSent), sendMsg);
+                            }
                             break;
                         case ReloadFriendReq:
                             sendMsg.type = Message.Message_Type.ReloadFriendReq;
@@ -209,12 +231,21 @@ public class ClientListener extends Thread {
                             break;
                         case AcceptReq:
                             int idReq = (int) msg.content;
-                            dao.getFriendReqById(idReq);
                             ReqFr reqFr = dao.getFriendReqById(idReq);
 
                             dao.createFriendShip(reqFr.getIdSend(), reqFr.getIdRev());
                             dao.createFriendShip(reqFr.getIdRev(), reqFr.getIdSend());
                             dao.deleteFr(idReq);
+
+                            sendMsg.type = Message.Message_Type.GetFriendList;
+                            sendMsg.content = dao.getFr(TheClient.getId());
+                            ServerCtr.Send(TheClient, sendMsg);
+
+                            sendMsg.type = Message.Message_Type.GetFriendList;
+                            sendMsg.content = dao.getFr(reqFr.getIdSend());
+                            if (ServerCtr.getClientById(reqFr.getIdSend()) != null) {
+                                ServerCtr.Send(ServerCtr.getClientById(reqFr.getIdSend()), sendMsg);
+                            }
                             break;
                         case GetFriendList:
                             sendMsg.type = Message.Message_Type.GetFriendList;
@@ -251,6 +282,10 @@ public class ClientListener extends Thread {
                             msgUser.content = userList;
                             ServerCtr.Send(TheClient, msgUser);
                             break;
+                        case Disconnect:
+                            ServerCtr.Send(TheClient, new Message(Message.Message_Type.Disconnect));
+                            TheClient.getSoket().close();
+                            ServerCtr.removeClient(TheClient);
 
                     }
 
@@ -266,5 +301,6 @@ public class ClientListener extends Thread {
 
             }
         }
+        ServerCtr.removeClient(TheClient);
     }
 }

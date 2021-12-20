@@ -12,11 +12,24 @@ package model;
 public class Message implements java.io.Serializable {
 
     public static enum Message_Type {
-        JoinServer, CreateRoom, ReturnRoomsNames, JoinRoom, MovePiece, Attack, Text, Selected, CheckMate,
-        Start, Upgrade, Ready, ExitRoom,CloseRoom,
-        Login, Register, LoginFailed, LoginSucced, EnemyLoss, Chat, Sigup, RefreshHis, GetFriendReq, SendFriendReq, AcceptReq, GetFriendList,
-        SearchUser, ReloadFriendReq
-    
+        JoinServer, CreateRoom, ReturnRoomsNames, 
+        JoinRoom, MovePiece, Attack, 
+        Text, Selected, CheckMate,
+        Start, Upgrade, Ready, 
+        ExitRoom, CloseRoom,
+        Login, Register, LoginFailed, 
+        LoginSucced, EnemyLoss, Chat, 
+        Sigup, RefreshHis, GetFriendReq, 
+        SendFriendReq, AcceptReq, GetFriendList,
+        SearchUser, ReloadFriendReq, Disconnect,
+        OpenMic, CloseMic, OpenSpeaker, CloseSpeaker,
+        GetAudioPort
+
+    }
+
+    public Message(Message_Type type, Object content) {
+        this.type = type;
+        this.content = content;
     }
 
     public Message_Type type;

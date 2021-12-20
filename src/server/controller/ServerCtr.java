@@ -28,6 +28,7 @@ public class ServerCtr {
 
     public static ServerSocket serverSocket;
     public static int IdClient = 1000;
+    public static int portAudio = 60000;
     public static int IdRoom = 0;
     public static int port = 0;
     public static NewClientListener runThread;
@@ -46,6 +47,10 @@ public class ServerCtr {
         }
     }
 
+    public static void removeClient(Client cl) {
+        Clients.remove(cl);
+    }
+
     public static void Send(Client cl, Message msg) {
 
         try {
@@ -53,6 +58,25 @@ public class ServerCtr {
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void sendBroadCast(Message msg) {
+        try {
+            for (Client c : Clients) {
+                c.getsOutput().writeObject(msg);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static Client getClientById(int id) {
+        for (Client c : Clients) {
+            if (c.getId() == id) {
+                return c;
+            }
+        }
+        return null;
     }
 
     public static ArrayList<String> ReturnRooms() {
@@ -88,15 +112,6 @@ public class ServerCtr {
 
         userDao.insertUser(userName, password);
 
-    }
-
-    public static Client getClientById(int id) {
-        for (Client c : Clients) {
-            if (c.getId() == id) {
-                return c;
-            }
-        }
-        return null;
     }
 
     public static List<History> getAllHis(int id) throws SQLException {

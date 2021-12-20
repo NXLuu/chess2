@@ -37,7 +37,7 @@ public class ClientController {
         menu.setVisible(true);
 
         gameController = new GameController();
-        
+
         menu.addLoginAction(new LoginListener());
         menu.addGuessAction(new GuessListener());
         menu.addconnectAction(new ConnectListener());
@@ -47,7 +47,7 @@ public class ClientController {
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(menu, message, "Error", JOptionPane.OK_OPTION);
     }
-    
+
     public void connetToServer() {
         Client.Start(serverHost, serverPort, gameController, this);
     }
@@ -84,7 +84,6 @@ public class ClientController {
     }
 
     class GuessListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
             GetNameJLog getnameLog = new GetNameJLog(menu, true);
@@ -111,15 +110,15 @@ public class ClientController {
         gameController.showGameClient();
         menu.setVisible(false);
     }
-    
+
     public void getName(GetNameJLog getnameLog) {
         String userName = getnameLog.getUserName();
         Message msg = new Message(Message.Message_Type.JoinServer);
         msg.content = userName;
         User user = new User();
         user.setUserName(userName);
-        Client.Send(msg);
         startGameClient(user);
+        Client.Send(msg);
         getnameLog.dispose();
     }
 
@@ -132,6 +131,7 @@ public class ClientController {
     }
 
     class GetName implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             String userName = getnameLog.getUserName();

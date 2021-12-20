@@ -26,6 +26,7 @@ public class ServerListener extends Thread {
 
     private GameController gameController;
     private ClientController clientController;
+    private boolean running = true;
 
     public ServerListener() {
     }
@@ -37,9 +38,10 @@ public class ServerListener extends Thread {
 
     @Override
     public void run() {
-        while (Client.socket.isConnected()) {
+        while (running && Client.socket.isConnected()) {
             try {
                 Message received = (Message) (Client.sInput.readObject());
+
                 switch (received.type) {
                     case ReturnRoomsNames:
                         Client.rooms = (ArrayList<String>) received.content;
@@ -84,11 +86,9 @@ public class ServerListener extends Thread {
                         break;
                     case LoginFailed:
                         clientController.showMessage("Invalid username or passowrd");
-
                         break;
                     case Chat:
                         gameController.setTextGameFrame((String) received.content, false);
-
                         break;
                     case RefreshHis:
                         gameController.refreshHis((List<History>) received.content);
@@ -108,13 +108,27 @@ public class ServerListener extends Thread {
                         List<User> users = (ArrayList<User>) received.content;
                         gameController.setFrs(users);
                         break;
+                    case Disconnect:
+                        running = false;
+                        System.exit(0);
+                    case GetAudioPort:
+                        int port = (int)received.content;
+                        Client.audioCtr.setSendingPort(port);
+                        break;
                 }
-
             } catch (IOException | ClassNotFoundException ex) {
-
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 break;
             }
         }
     }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
 }

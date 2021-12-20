@@ -41,18 +41,18 @@ public class PieceImages {
 
     public PieceImages() {
         try {
-            wk = ImageIO.read(new File(new File("src/client/clientModel/asset/wk.png").getCanonicalPath()));
-            bk = ImageIO.read(new File(new File("src/client/clientModel/asset/bk.png").getCanonicalPath()));
-            wr = ImageIO.read(new File(new File("src/client/clientModel/asset/wr.png").getCanonicalPath()));
-            br = ImageIO.read(new File(new File("src/client/clientModel/asset/br.png").getCanonicalPath()));
-            wq = ImageIO.read(new File(new File("src/client/clientModel/asset/wq.png").getCanonicalPath()));
-            bq = ImageIO.read(new File(new File("src/client/clientModel/asset/bq.png").getCanonicalPath()));
-            wb = ImageIO.read(new File(new File("src/client/clientModel/asset/wb.png").getCanonicalPath()));
-            bb = ImageIO.read(new File(new File("src/client/clientModel/asset/bb.png").getCanonicalPath()));
-            wn = ImageIO.read(new File(new File("src/client/clientModel/asset/wn.png").getCanonicalPath()));
-            bn = ImageIO.read(new File(new File("src/client/clientModel/asset/bn.png").getCanonicalPath()));
-            wp = ImageIO.read(new File(new File("src/client/clientModel/asset/wp.png").getCanonicalPath()));
-            bp = ImageIO.read(new File(new File("src/client/clientModel/asset/bp.png").getCanonicalPath()));
+            wk = ImageIO.read(getClass().getResource("/client/clientModel/asset/wk.png"));
+            bk = ImageIO.read(getClass().getResource("/client/clientModel/asset/bk.png"));
+            wr = ImageIO.read(getClass().getResource("/client/clientModel/asset/wr.png"));
+            br = ImageIO.read(getClass().getResource("/client/clientModel/asset/br.png"));
+            wq = ImageIO.read(getClass().getResource("/client/clientModel/asset/wq.png"));
+            bq = ImageIO.read(getClass().getResource("/client/clientModel/asset/bq.png"));
+            wb = ImageIO.read(getClass().getResource("/client/clientModel/asset/wb.png"));
+            bb = ImageIO.read(getClass().getResource("/client/clientModel/asset/bb.png"));
+            wn = ImageIO.read(getClass().getResource("/client/clientModel/asset/wn.png"));
+            bn = ImageIO.read(getClass().getResource("/client/clientModel/asset/bn.png"));
+            wp = ImageIO.read(getClass().getResource("/client/clientModel/asset/wp.png"));
+            bp = ImageIO.read(getClass().getResource("/client/clientModel/asset/bp.png"));
         } catch (IOException e) {
         }
     }

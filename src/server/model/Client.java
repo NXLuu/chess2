@@ -12,7 +12,9 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Message;
+import server.controller.CaptureThread;
 import server.controller.ClientListener;
+import server.controller.ServerCtr;
 
 /**
  *
@@ -27,11 +29,21 @@ public class Client {
     String timeSetting = "Null";
     String side = "Null";
     Socket soket;
+    private String ipConnect = "";
     ObjectOutputStream sOutput;
     ObjectInputStream sInput;
     ClientListener listenThread;
+    CaptureThread captureThread;
     Client opponent;
     boolean isLogin = false;
+
+    public String getIpConnect() {
+        return ipConnect;
+    }
+
+    public void setIpConnect(String ipConnect) {
+        this.ipConnect = ipConnect;
+    }
 
     public boolean isIsLogin() {
         return isLogin;
@@ -39,6 +51,14 @@ public class Client {
 
     public void setIsLogin(boolean isLogin) {
         this.isLogin = isLogin;
+    }
+
+    public CaptureThread getCaptureThread() {
+        return captureThread;
+    }
+
+    public void setCaptureThread(CaptureThread captureThread) {
+        this.captureThread = captureThread;
     }
 
     public Client(Socket gelenSoket, int id) {
@@ -51,6 +71,7 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.listenThread = new ClientListener(this);
+        this.captureThread = new CaptureThread();
     }
 
     public void Send(Message message) {
@@ -66,7 +87,10 @@ public class Client {
         timeSetting = "Null";
         side = "Null";
         roomId = -1;
-        opponent.opponent = null;
+        if (opponent != null) {
+            opponent.opponent = null;
+        }
+        captureThread.setIpConnect(null);
         this.opponent = null;
     }
 

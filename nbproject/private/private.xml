@@ -7,6 +7,8 @@
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/view/Menu.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/Queen.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/Rook.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/model/ReqFr.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/time/Timer.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/main.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/model/History.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/test/test.java</file>
@@ -16,19 +18,26 @@
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/view/GameFrame.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/board/Move.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/board/Board.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/controller/CaptureThread.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/Chess.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/model/Client.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/Pawn.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/controller/ServerCtr.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/controller/ClientListener.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/Piece.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/model/Client.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/Knight.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/King.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/model/Message.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/view/LoginJLog.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/logicApplication/UserDAO.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/logicApplication/DAO.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/server/controller/NewClientListener.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/controller/AudioController.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/game/Game.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/view/GetNameJLog.java</file>
+            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/view/SignUpJlog.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/Bishop.java</file>
-            <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/test/testClientController.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/controller/ServerListener.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/model/User.java</file>
             <file>file:/C:/Users/nxulu/Documents/NetBeansProjects/Chess/src/client/clientModel/pieces/PieceImages.java</file>

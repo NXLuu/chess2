@@ -5,6 +5,7 @@
  */
 package model;
 
+import client.controller.AudioController;
 import client.controller.ClientController;
 import client.controller.GameController;
 import client.controller.ServerListener;
@@ -28,13 +29,18 @@ public class Client {
     public static ServerListener listenMe;
     public static ArrayList<String> rooms;
     public static boolean isLogin = false;
+    public static AudioController audioCtr;
 
-    
-    
+    public static void StartAudio(String ip, int port1, int port2) {
+
+    }
+
     public static void Start(String ip, int port, GameController gameController, ClientController clientController) {
         try {
             Client.socket = new Socket(ip, port);
-            Client.Display("Servera bağlandı");
+            audioCtr = new AudioController(ip, 1652, 59999);
+            audioCtr.captureAudio();
+            Client.Display("Server success connection");
             Client.sInput = new ObjectInputStream(Client.socket.getInputStream());
             Client.sOutput = new ObjectOutputStream(Client.socket.getOutputStream());
             Client.listenMe = new ServerListener(gameController, clientController);
@@ -47,7 +53,7 @@ public class Client {
     public static void StartWithLogin(String ip, int port, String userName, String password) {
         try {
             Client.socket = new Socket(ip, port);
-            Client.Display("Servera bağlandı");
+            Client.Display("Server success connection");
             Client.sInput = new ObjectInputStream(Client.socket.getInputStream());
             Client.sOutput = new ObjectOutputStream(Client.socket.getOutputStream());
             Client.listenMe = new ServerListener();
@@ -67,16 +73,19 @@ public class Client {
     public static void Stop() {
         try {
             if (Client.socket != null) {
-                Client.listenMe.stop();
-                Client.socket.close();
                 Client.sOutput.flush();
                 Client.sOutput.close();
                 Client.sInput.close();
+                Client.socket.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public static void StopRunning() {
+        Client.listenMe.setRunning(false);
     }
 
     public static void Display(String msg) {
@@ -88,7 +97,9 @@ public class Client {
     //mesaj gönderme fonksiyonu
     public static void Send(Message msg) {
         try {
-            Client.sOutput.writeObject(msg);
+            if (Client.socket.isConnected()) {
+                Client.sOutput.writeObject(msg);
+            }
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

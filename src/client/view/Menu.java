@@ -7,8 +7,9 @@ package client.view;
 
 //import controller.Controller;
 import java.awt.event.ActionListener;
-import javax.swing.JDialog;
-import javax.swing.SwingUtilities;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -22,19 +23,19 @@ public class Menu extends javax.swing.JFrame {
     public Menu() {
         initComponents();
     }
-    
+
     public void addconnectAction(ActionListener l) {
         jButton3.addActionListener(l);
     }
-    
+
     public void addLoginAction(ActionListener l) {
         jButton1.addActionListener(l);
     }
-    
+
     public void addGuessAction(ActionListener l) {
         jButton2.addActionListener(l);
     }
-    
+
     public void addRegisterAction(ActionListener l) {
         jButton4.addActionListener(l);
     }
@@ -140,7 +141,11 @@ public class Menu extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(102, 0, 102));
         jLabel1.setForeground(new java.awt.Color(255, 255, 51));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("src/client/clientModel/asset/peakpx.jpg").getImage().getScaledInstance(600, 700, java.awt.Image.SCALE_SMOOTH)));
+        try {
+            BufferedImage img = ImageIO.read(getClass().getResource("/client/clientModel/asset/peakpx.jpg"));
+            jLabel1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon(img).getImage().getScaledInstance(600, 700, java.awt.Image.SCALE_SMOOTH)));
+        } catch (IOException e) {
+        }
         jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel1.setOpaque(true);
 
@@ -177,7 +182,7 @@ public class Menu extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-       
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -192,7 +197,7 @@ public class Menu extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -202,7 +207,6 @@ public class Menu extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

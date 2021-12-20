@@ -194,7 +194,7 @@
                   <Color blue="33" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="icon" postCode="jLabel1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon(&quot;src/client/clientModel/asset/peakpx.jpg&quot;).getImage().getScaledInstance(600, 700, java.awt.Image.SCALE_SMOOTH)));"/>
+                <Property name="icon" postCode="try {&#xa;           BufferedImage img = ImageIO.read(getClass().getResource(&quot;/client/clientModel/asset/peakpx.jpg&quot;));&#xa; jLabel1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon(img).getImage().getScaledInstance(600, 700, java.awt.Image.SCALE_SMOOTH)));&#xa;        } catch (IOException e) {&#xa;        }"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Default Cursor"/>
                 </Property>

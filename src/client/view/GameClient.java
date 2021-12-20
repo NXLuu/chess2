@@ -96,6 +96,7 @@ public class GameClient extends javax.swing.JFrame {
     }
 
     public void setListRoom(ArrayList<String> rooms) {
+        lm1.removeAllElements();
         rooms.forEach((r) -> {
             lm1.addElement(r);
         });
